@@ -1,0 +1,36 @@
+# filename: serverless.yml
+service: ImageUploaderService
+
+# The `provider` block defines where your service will be deployed
+custom:
+  bucket: getting-started-lambda-example-rafael
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-1
+  stackName: imageUploader
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject" 
+      Resource: 
+        - "arn:aws:s3:::${self:custom.bucket}/*" 
+
+# The `functions` block defines what code to deploy
+functions:
+  UploadImage:
+    handler: uploadImage.handler
+    # The `events` block defines how to trigger the uploadImage.handler code
+    events:
+      - http:
+          path: upload
+          method: post
+          cors: true
+    environment:
+      Bucket: ${self:custom.bucket} 
+resources:
+  Resources:
+    StorageBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: ${self:custom.bucket}
