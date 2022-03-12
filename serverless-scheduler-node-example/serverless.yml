@@ -1,0 +1,14 @@
+service: serverless-scheduler-node-example
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-1 
+
+functions:
+  schedule-example:
+    handler: handler.scheduleExample
+    events:
+      - schedule: rate(1 minute)
